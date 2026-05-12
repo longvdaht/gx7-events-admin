@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const form = formidable();
+  const form = formidable({ uploadDir: "/tmp", keepExtensions: true });
   form.parse(req, async (err, fields, files) => {
     if (err) return res.status(500).json({ error: "Failed to parse form" });
 
