@@ -56,7 +56,7 @@ export default function Generate({ downloadImage }: any) {
       })
       .catch((err) => {
         setLoading(false);
-        alert(err.response?.data?.error ?? err.message);
+        alert(err.response?.data?.error ?? err.message ?? JSON.stringify(err));
       });
   };
 
