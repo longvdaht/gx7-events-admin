@@ -43,21 +43,25 @@ export default function Generate({ downloadImage }: any) {
     }
   };
 
-  const uploadFile = (file: any, presentationFileName: string) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("key", presentationFileName);
-
-    axios
-      .post("/api/upload", formData)
-      .then(() => {
-        setLoading(false);
-        setSuccess(true);
-      })
-      .catch((err) => {
-        setLoading(false);
-        alert(err.response?.data?.error ?? err.message ?? JSON.stringify(err));
+  const uploadFile = async (file: any, presentationFileName: string) => {
+    try {
+      const { data } = await axios.get("/api/upload", {
+        params: { key: presentationFileName, contentType: file.type || "application/pdf" },
       });
+
+      await axios.put(data.url, file, {
+        headers: {
+          "Content-Type": file.type || "application/pdf",
+          "x-amz-acl": "public-read",
+        },
+      });
+
+      setLoading(false);
+      setSuccess(true);
+    } catch (err: any) {
+      setLoading(false);
+      alert(err.response?.data?.error ?? err.message ?? JSON.stringify(err));
+    }
   };
 
   const createEvent = (eventData: Event, file: any, fileName: string) => {
